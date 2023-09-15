@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Calculadora de Cambio</title>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Supermercado El inge Arellano</h1>
+            <p>Calculadora de Cambio</p>
+        </header>
+        <div class="input-container">
+            <label for="total">Total a pagar huerco:</label>
+            <input type="number" id="total" step="0.01" placeholder="0.00">
+        </div>
+        <div class="input-container">
+            <label for="amountGiven">Cantidad entregada:</label>
+            <input type="number" id="amountGiven" step="0.01" placeholder="0.00">
+        </div>
+        <button onclick="calculateChange()">Calcular Cambio <i class="fas fa-coins"></i></button>
+        <button onclick="clearInput()">Nueva operacion <i class="fas fa-broom"></i></button>
+        <button onclick="goToIndexPage()">Practica 6 <i class="fas fa-arrow-left"></i></button>
+        <div id="result" class="result-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

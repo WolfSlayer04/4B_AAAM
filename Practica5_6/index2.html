@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-top: 20px;
+        }
+        
+        .tower-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+        }
+        
+        .tower {
+            width: 20px;
+            background-color: #222;
+            position: relative;
+        }
+        
+        .disk {
+            background-color: #3498db;
+            height: 20px;
+            margin: 2px 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: left 0.3s;
+        }
+        
+        .game-container {
+            margin-top: 20px;
+        }
+        
+        .button-container {
+            margin-top: 20px;
+        }
+        
+        button {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 18px;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #movements {
+            font-size: 18px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        #movementList {
+            list-style: none;
+            padding: 0;
+        }
+        
+        #movementList li {
+            margin-bottom: 5px;
+        }
+        
+        #footer {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Torres de Hanói</h1>
+    <div class="tower-container">
+        <div class="tower" id="tower1"></div>
+        <div class="tower" id="tower2"></div>
+        <div class="tower" id="tower3"></div>
+    </div>
+    <div class="game-container">
+        <div class="button-container">
+            <button onclick="solveHanoi()">Resolver</button>
+
+            <button onclick="goToIndex()">Ir a la página principal</button>
+            <button onclick="clearMovements()">Limpiar Movimientos</button>
+        </div>
+        <div id="movements">
+            <h2>Movimientos:</h2>
+            <ul id="movementList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let towers = [
+            [],
+            [],
+            []
+        ];
+        let movements = [];
+
+        function moveDisk(from, to) {
+            if (isValidMove(from, to)) {
+                let disk = towers[from].pop();
+                towers[to].push(disk);
+                updateDisplay();
+                movements.push(`Mover disco ${disk} desde Torre ${from + 1} a Torre ${to + 1}`);
+                updateMovementsList();
+            }
+        }
+
+        function isValidMove(from, to) {
+            if (towers[from].length === 0) {
+                return false; // No hay disco para mover
+            }
+
+            if (towers[to].length === 0) {
+                return true; // Mover a una torre vacía es siempre válido
+            }
+
+            let diskToMove = towers[from][towers[from].length - 1];
+            let topDisk = towers[to][towers[to].length - 1];
+            return diskToMove < topDisk;
+        }
+
+        function hanoi(n, source, auxiliary, target) {
+            if (n === 1) {
+                moveDisk(source, target);
+                return;
+            }
+            hanoi(n - 1, source, target, auxiliary);
+            moveDisk(source, target);
+            hanoi(n - 1, auxiliary, source, target);
+        }
+
+        function solveHanoi() {
+            let numDisks = parseInt(prompt("Ingrese el número de discos:"));
+            if (numDisks < 1 || numDisks > 8) {
+                alert("El número de discos debe estar entre 1 y 8.");
+                return;
+            }
+            initializeTowers(numDisks);
+            movements = [];
+            updateMovementsList();
+            hanoi(numDisks, 0, 1, 2);
+        }
+
+        function initializeTowers(numDisks) {
+            towers = [
+                [],
+                [],
+                []
+            ];
+            for (let i = numDisks; i > 0; i--) {
+                towers[0].push(i);
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            for (let i = 0; i < 3; i++) {
+                let towerElement = document.getElementById(`tower${i + 1}`);
+                towerElement.innerHTML = '';
+                for (let j = 0; j < towers[i].length; j++) {
+                    let diskElement = document.createElement('div');
+                    diskElement.className = 'disk';
+                    diskElement.style.width = `${towers[i][j] * 20}px`;
+                    diskElement.style.left = `calc(50% - ${(towers[i][j] * 20) / 2}px)`;
+                    towerElement.appendChild(diskElement);
+                }
+            }
+        }
+
+        function updateMovementsList() {
+            let movementList = document.getElementById('movementList');
+            movementList.innerHTML = '';
+            movements.forEach((movement) => {
+                let listItem = document.createElement('li');
+                listItem.textContent = movement;
+                movementList.appendChild(listItem);
+            });
+        }
+
+        function resetGame() {
+            let numDisks = towers[0].length;
+            initializeTowers(numDisks);
+            movements = [];
+            updateMovementsList();
+        }
+
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+        function clearMovements() {
+            movements = [];
+            updateMovementsList();
+        }
+
+        updateDisplay();
+    </script>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</body>
+
+</html>
